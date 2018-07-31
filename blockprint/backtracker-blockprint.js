@@ -10,7 +10,7 @@ const W = 8;
 // for some reason these needed to be translated back into their bits?
 const DX = { 1: 0, 2: 0, 4: 1, 8: -1 };
 const DY = { 1: -1, 2: 1, 4: 0, 8: 0 };
-const Opposite = { 1: 2, 2: 1, 4: 8, 8: 4 }
+const Opposite = { 1: 2, 2: 1, 4: 8, 8: 4 };
 
 window.onload = function () {
   GenerateMaze();

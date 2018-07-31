@@ -10,7 +10,9 @@ const W = 8;
 // for some reason these needed to be translated back into their bits?
 const DX = { 1: 0, 2: 0, 4: 1, 8: -1 };
 const DY = { 1: -1, 2: 1, 4: 0, 8: 0 };
-const Opposite = { 1: 2, 2: 1, 4: 8, 8: 4 }
+const Opposite = { 1: 2, 2: 1, 4: 8, 8: 4 };
+
+var loadTimes = []
 
 window.onload = function () {
   GenerateMaze();
@@ -25,7 +27,7 @@ function GenerateMaze ()
     height = Number(heightComponent.value);
     width = Number(widthComponent.value);
   }
-  catch {
+  catch (e) {
     console.log("couldn't convert type!");
   }
   grid = CreateArray(width, height);
@@ -33,6 +35,11 @@ function GenerateMaze ()
   DrawMaze();
   let elapsed = performance.now() - start;
   console.log("generating maze took " + elapsed + " ms");
+  loadTimes.push(elapsed);
+  let avg = loadTimes.reduce(function(total, num) {
+    return total + num;
+  })
+  document.getElementById("loadtime").innerHTML = "Average load time: " + (avg/loadTimes.length).toString().slice(0,5);
 }
 
 function CreateArray (width, height)
@@ -74,7 +81,8 @@ function isOutOfBounds (x, y)
   return false;
 }
 
-function Shuffle(arr) {
+function Shuffle(arr)
+{
   for (var i = arr.length - 1; i > 0; i--) {
     var j = Math.floor(Math.random() * (i + 1))
     var temp = arr[i]
@@ -86,6 +94,7 @@ function Shuffle(arr) {
 
 function DrawMaze ()
 {
+  let start = performance.now();
   var html = "<pre>";
 
   for (var z = 0; z < width; z++) {
@@ -116,4 +125,6 @@ function DrawMaze ()
   }
   html += "</pre>"
   document.getElementById("mazeContainer").innerHTML = html;
+  let elapsed = performance.now() - start;
+  console.log("DrawMaze executed in "+elapsed+" ms");
 }
