@@ -1,5 +1,5 @@
-var height = 68;
-var width = 132;
+var height = 50;
+var width = 50;
 var grid;
 
 const N = 1;
@@ -18,9 +18,21 @@ window.onload = function () {
 
 function GenerateMaze ()
 {
+  let start = performance.now();
+  widthComponent = document.getElementById("width");
+  heightComponent = document.getElementById("height");
+  try {
+    height = Number(heightComponent.value);
+    width = Number(widthComponent.value);
+  }
+  catch {
+    console.log("couldn't convert type!");
+  }
   grid = CreateArray(width, height);
   CarvePassages(0,0);
   DrawMaze();
+  let elapsed = performance.now() - start;
+  console.log("generating maze took " + elapsed + " ms");
 }
 
 function CreateArray (width, height)
