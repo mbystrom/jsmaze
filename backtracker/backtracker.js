@@ -39,7 +39,7 @@ function GenerateMaze ()
   let avg = loadTimes.reduce(function(total, num) {
     return total + num;
   })
-  document.getElementById("loadtime").innerHTML = "Average load time: " + (avg/loadTimes.length).toString().slice(0,5);
+  document.getElementById("loadtime").innerHTML = "Average load time: " + (avg/loadTimes.length).toString().slice(0,5) + " ms";
 }
 
 function CreateArray (width, height)

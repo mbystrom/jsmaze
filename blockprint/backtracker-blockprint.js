@@ -30,9 +30,13 @@ function GenerateMaze ()
   }
   grid = CreateArray(width, height);
   CarvePassages(0,0);
+  let drawStart = performance.now();
   DrawMaze();
-  let elapsed = performance.now() - start;
+  let end = performance.now();
+  let elapsed = end - start;
+  let drawTime = end - drawStart;
   console.log("generating maze took " + elapsed + " ms");
+  console.log("drawing maze took " + drawTime + " ms");
 }
 
 function CreateArray (width, height)

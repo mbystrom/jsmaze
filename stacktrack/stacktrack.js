@@ -2,7 +2,7 @@ var height = 50;
 var width = 50;
 var grid;
 
-
+// remember these because they are referenced directly as numbers
 const N = 1;
 const S = 2;
 const E = 4;
@@ -53,18 +53,23 @@ function CarvePassages ()
   let ignore = [];
   let emptyTiles = GetEmptyTiles(ignore);
   timeStarted = performance.now();
+  
   while (emptyTiles.length > 3) {
     let stack = [];
     stack.push(emptyTiles[0]);
+
     while (stack.length > 0) {
       let index = stack.length - 1;
       let currentTile = stack[index];
+
       let directions = Shuffle([N,S,E,W]);
 
       let directionsTried = [];
+
       for (direction of directions) {
         nextX = currentTile.x + DX[direction];
         nextY = currentTile.y + DY[direction];
+
         directionsTried.push(direction);
 
         if (isOut(nextX, nextY)) continue;
@@ -76,11 +81,15 @@ function CarvePassages ()
           break;
         }
       }
+
       if (directionsTried.length >= 4) {
-        if (grid[currentTile.y][currentTile.x] == 0) ignore.push(currentTile);
+        if (grid[currentTile.y][currentTile.x] == 0) {
+          ignore.push(currentTile);
+        }
         stack.pop(index);
       }
     }
+
     emptyTiles = GetEmptyTiles(ignore);
     if ((performance.now() - timeStarted) > 300) {
       console.error("It ran too long again!");
@@ -145,7 +154,7 @@ function DrawMaze ()
   console.log("DrawMaze executed in "+elapsed+" ms");
 }
 
-function GetEmptyTiles (ignore)
+function GetEmptyTiles (ignore = [])
 {
   let empty = [];
   for (var y = 0; y < height; y++) {
