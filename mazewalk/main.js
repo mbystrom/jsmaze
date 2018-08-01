@@ -11,6 +11,7 @@ window.onload = function () {
   Start();
 }
 
+// Listens for keypresses and continues the loop if a valid keypress occurs
 document.addEventListener('keydown', (event) => {
   if (event.keyCode == "37") Update('left');
   if (event.keyCode == "39") Update('right');
@@ -20,20 +21,20 @@ document.addEventListener('keydown', (event) => {
 
 function Start ()
 {
+  // initializes the game by calling update with a blank key
   Update('');
 }
 
+// the main loop
 function Update (key)
 {
   playerPosition = MovePlayer(playerPosition, key);
-
   grid[playerPosition.y][playerPosition.x] = '<span style="color:red">@</span>';
-
   ClearGrid(playerPosition);
-
   DrawMaze(grid);
 }
 
+// moves player if it receives a valid command
 function MovePlayer (pos, key)
 {
   let choices = ['left', 'right', 'up', 'down'];
@@ -43,18 +44,17 @@ function MovePlayer (pos, key)
 
     let nextX = pos.x + DX[key];
     let nextY = pos.y + DY[key];
-    if (grid[nextY][nextX] != '#') {
-      console.log("the next space ("+ grid[nextY][nextX] +") isn't a '#'!")
+
+    // only moves if the space is open
+    if (grid[nextY][nextX] == '.') {
       pos.x = nextX;
       pos.y = nextY;
-      return pos
-    } else {
-      return pos;
     }
   }
   return pos;
 }
 
+// clears all spaces that aren't a valid character (skips the position in keep)
 function ClearGrid (keep)
 {
   for (var y = 0; y < grid.length; y++) {
@@ -67,6 +67,7 @@ function ClearGrid (keep)
   }
 }
 
+// places the player on the map
 function PlacePlayer ()
 {
   let possibleLocations = [];
