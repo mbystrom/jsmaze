@@ -1,5 +1,7 @@
-var height = 50;
-var width = 50;
+export { GenerateMaze, DrawMaze };
+
+var height = 20;
+var width = 42;
 var grid;
 
 const N = 1;
@@ -12,34 +14,21 @@ const DX = { 1: 0, 2: 0, 4: 1, 8: -1 };
 const DY = { 1: -1, 2: 1, 4: 0, 8: 0 };
 const Opposite = { 1: 2, 2: 1, 4: 8, 8: 4 };
 
-var loadTimes = []
-
-window.onload = function () {
-  GenerateMaze();
-}
-
 function GenerateMaze ()
 {
-  let start = performance.now();
-  widthComponent = document.getElementById("width");
-  heightComponent = document.getElementById("height");
-  try {
-    height = Number(heightComponent.value);
-    width = Number(widthComponent.value);
-  }
-  catch (e) {
-    console.log("couldn't convert type!");
-  }
+  // widthComponent = document.getElementById("width");
+  // heightComponent = document.getElementById("height");
+  // try {
+  //   height = Number(heightComponent.value);
+  //   width = Number(widthComponent.value);
+  // }
+  // catch {
+  //   console.log("couldn't convert type!");
+  // }
   grid = CreateArray(width, height);
   CarvePassages(0,0);
-  DrawMaze();
-  let elapsed = performance.now() - start;
-  console.log("generating maze took " + elapsed + " ms");
-  loadTimes.push(elapsed);
-  let avg = loadTimes.reduce(function(total, num) {
-    return total + num;
-  })
-  document.getElementById("loadtime").innerHTML = "Average load time: " + (avg/loadTimes.length).toString().slice(0,5) + " ms";
+  var maze = ConvertAsciiMaze();
+  return maze;
 }
 
 function CreateArray (width, height)
@@ -81,8 +70,7 @@ function isOutOfBounds (x, y)
   return false;
 }
 
-function Shuffle(arr)
-{
+function Shuffle(arr) {
   for (var i = arr.length - 1; i > 0; i--) {
     var j = Math.floor(Math.random() * (i + 1))
     var temp = arr[i]
@@ -92,39 +80,67 @@ function Shuffle(arr)
   return arr
 }
 
-function DrawMaze ()
+function DrawMaze (matrix)
 {
-  let start = performance.now();
-  var html = "<pre>";
+  var html = "";
 
-  for (var z = 0; z < width; z++) {
-    html += "__";
-  }
-  html += "<br/>";
-
-  for (var y = 0; y < height; y++) {
-    html += "|"
-    for (var x = 0; x < width; x++) {
-      if ((grid[y][x] & S) != 0) {
-        html += " ";
-      } else {
-        html += "_";
-      }
-
-      if ((grid[y][x] & E) != 0) {
-        if (((grid[y][x] | grid[y][x+1]) & S) != 0) {
-          html += " ";
-        } else {
-          html += "_";
-        }
-      } else {
-        html += "|";
-      }
+  for (var row of matrix) {
+    for (var cell of row) {
+      html += cell;
     }
     html += "<br/>";
   }
-  html += "</pre>"
+  
   document.getElementById("mazeContainer").innerHTML = html;
-  let elapsed = performance.now() - start;
-  console.log("DrawMaze executed in "+elapsed+" ms");
+}
+
+function ConvertAsciiMaze ()
+{
+  var maze = [];
+
+  let firstLine = [];
+  for (var x = 0; x < width*2 + 1; x++) {
+    firstLine.push('#');
+  }
+  maze.push(firstLine);
+
+  for (var y = 0; y < height; y++) {
+    
+    let line = [];
+    line.push('#');
+
+    for (var x = 0; x < width; x++) {
+      
+      if (grid[y][x] == 0) {
+        line.push('#');
+      } else {
+        line.push('.');
+      }
+
+      if ((grid[y][x] & E) == 0) {
+        line.push('#');
+      } else {
+        line.push('.');
+      }
+    }
+
+    maze.push(line);
+
+    line = [];
+    line.push('#');
+
+    for (var x = 0; x < width; x++) {
+      
+      if ((grid[y][x] & S) == 0) {
+        line.push('#');
+      } else {
+        line.push('.')
+      }
+
+      line.push('#');
+    }
+
+    maze.push(line);
+  }
+  return maze;
 }
