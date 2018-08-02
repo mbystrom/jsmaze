@@ -1,4 +1,4 @@
-export const random = {
+export default {
   shuffle,
   randint,
   choice,
@@ -25,7 +25,7 @@ function randint (start=0, end)
 
 function choice (array)
 {
-  let index = randint(array.length - 1);
+  let index = randint(0, array.length - 1);
   return array[index];
 }
 
