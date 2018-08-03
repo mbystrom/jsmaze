@@ -31,6 +31,7 @@ function GenerateMaze ()
   CarvePassages();
   finalGrid = ConvertAsciiMaze();
   ConnectRegions();
+  AddCycles();
   RemoveEnds();
   DrawMaze(finalGrid);
   let end = performance.now() - start;
@@ -116,6 +117,7 @@ function CarveFrom (currentX, currentY)
 
 function ConnectRegions ()
 {
+  let start = performance.now();
   let regions = GetRegions();
 
   while (regions.length > 1) {
@@ -161,7 +163,6 @@ function ConnectRegions ()
       if (connectors.length > 5) {
         for (var i = 0; i < 5; i++) {
           let connector = random.choice(connectors);
-          console.log(connector);
           finalGrid[connector.y][connector.x] = '.';
         }
       }
@@ -175,11 +176,12 @@ function ConnectRegions ()
 
     regions = GetRegions();
   }
+  let elapse = performance.now() - start;
+  console.log("connecting regions took "+elapse+" ms");
 }
 
 function GetRegions ()
 {
-  console.log("getting regions!"); let start = performance.now();
   let notInRoom = GetTiles(finalGrid, '.', inRoom);
   let regions = [];
   let flags = CreateArray(finalGrid[0].length, finalGrid.length);
@@ -192,7 +194,6 @@ function GetRegions ()
           for (var i = 0; i < notInRoom.length; i++) {
             if (notInRoom[i].x === x && notInRoom[i].y === y) {
               notInRoom.splice(i, 1);
-              // console.log("Point ("x+", "+y+") in flags! splicing!");
             }
           }
         }
@@ -202,16 +203,13 @@ function GetRegions ()
       let region = GetRegion(notInRoom[0], flags);
       regions.push(region);
     }
-    console.log("there are "+regions.length+" regions");
   }
 
-  let end = performance.now() - start; console.log("GetRegions Ran in "+end+" ms!");
   return regions;
 }
 
 function GetRegion(point, flags)
 {
-  console.log("getting a region!"); let start = performance.now();
   let tiles = [];
   let queue = [point,];
   while (queue.length > 0) {
@@ -230,8 +228,6 @@ function GetRegion(point, flags)
       }
     }
   }
-
-  let end = performance.now() - start; console.log("getting one region took "+end+" ms");
   return tiles;
 }
 
@@ -246,6 +242,46 @@ function GetWalls ()
     }
   }
   return walls;
+}
+
+// this one's sort of it's own thing, but also kinda fits with the above functions
+
+function AddCycles ()
+{
+  for (var i = 0; i < 10; i++) {
+    let cycles = GetCycleable();
+    let cycle = random.choice(cycles);
+
+    finalGrid[cycle.y][cycle.x] = '.';
+  }
+}
+
+function GetCycleable ()
+{
+  let walls = GetWalls();
+  let cycleables = [];
+  for (var wall of walls) {
+    let adjacentTiles = [];
+
+    for (var direction of [N,S,E,W]) {
+      let nx = wall.x + DX[direction];
+      let ny = wall.y + DY[direction];
+
+      if (isOut(finalGrid, nx, ny)) continue;
+
+      if (finalGrid[ny][nx] === '.') {
+        adjacentTiles.push({ x: nx, y: ny });
+      }
+    }
+
+    if (adjacentTiles.length === 2) {
+      if (adjacentTiles[0].x === adjacentTiles[1].x || adjacentTiles[0].y === adjacentTiles[1].y) {
+        cycleables.push(wall);
+      }
+    }
+  }
+
+  return cycleables;
 }
 
 
@@ -403,7 +439,7 @@ function DrawMaze (maze)
     for (var cell of row) {
       if (cell === "#") html += "&#9608;" // creates the "full block (█)" character instead of "#"
       else html += cell;
-      // html += cell;
+      // html += cell;  // comment out the above two lines and uncomment this for normal drawing
     }
     html += "<br/>";
   }
