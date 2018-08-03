@@ -5,10 +5,10 @@ export default {
   DrawMaze
 }
 
-var height = 25;
-var width = 50;
-var roomAttempts = 25;
-var cyclesToAdd = 15;
+var height = 15;
+var width = 34;
+var roomAttempts = 15;
+var cyclesToAdd = 7;
 
 var grid;
 var finalGrid;
@@ -166,8 +166,8 @@ function ConnectRegions ()
     }
 
     if (connectors.length > 0) {
-      if (connectors.length > 10) {
-        for (var i = 0; i < 10; i++) {
+      if (connectors.length > (width/5)) {
+        for (var i = 0; i < (width/5); i++) {
           let connector = random.choice(connectors);
           finalGrid[connector.y][connector.x] = '.';
         }

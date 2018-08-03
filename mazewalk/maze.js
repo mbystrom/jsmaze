@@ -1,7 +1,7 @@
 export { GenerateMaze, DrawMaze };
 
-var height = 20;
-var width = 42;
+var height = 15;
+var width = 34;
 var grid;
 
 const N = 1;
