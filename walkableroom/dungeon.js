@@ -1,5 +1,10 @@
 import random from "../random.js";
 
+export default {
+  GenerateMaze,
+  DrawMaze
+}
+
 var height = 25;
 var width = 50;
 var roomAttempts = 25;
@@ -20,9 +25,9 @@ const DX = { 1: 0, 2: 0, 4: 1, 8: -1 };
 const DY = { 1: -1, 2: 1, 4: 0, 8: 0 };
 const Opposite = { 1: 2, 2: 1, 4: 8, 8: 4 };
 
-window.onload = function () {
-  GenerateMaze();
-}
+// window.onload = function () {
+//   GenerateMaze();
+// }
 
 function GenerateMaze ()
 {
@@ -34,9 +39,9 @@ function GenerateMaze ()
   ConnectRegions();
   AddCycles();
   RemoveEnds();
-  DrawMaze(finalGrid);
   let end = performance.now() - start;
   console.log("Maze generator ran in " + end + " ms");
+  return finalGrid;
 }
 
 // Room Placement Functions
