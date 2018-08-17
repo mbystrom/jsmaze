@@ -194,13 +194,13 @@ function GetRegions ()
       for (var x = 0; x < flags[0].length; x++) {
         if (flags[y][x] === 0) continue;
         
-          for (var i = 0; i < notInRoom.length; i++) {
-            if (notInRoom[i].x === x && notInRoom[i].y === y) {
-              notInRoom.splice(i, 1);
-            }
+        for (var i = 0; i < notInRoom.length; i++) {
+          if (notInRoom[i].x === x && notInRoom[i].y === y) {
+            notInRoom.splice(i, 1);
           }
         }
       }
+    }
     if (notInRoom.length > 0) {
       let region = GetRegion(notInRoom[0], flags);
       regions.push(region);
